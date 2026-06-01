@@ -10,6 +10,24 @@ Configure a CachyOS laptop with Ansible.
 
 ## Usage
 
+Before running the playbook on a CachyOS laptop, install the required tooling manually:
+
+```bash
+sudo pacman -Syu
+sudo pacman -S --needed ansible git base-devel
+ansible-galaxy collection install community.general
+```
+
+The playbook also expects `paru` to be available for AUR packages. If `paru` is not already installed, bootstrap it manually:
+
+```bash
+git clone https://aur.archlinux.org/paru.git
+cd paru
+makepkg -si
+cd ..
+rm -rf paru
+```
+
 Run the playbook against the local machine:
 
 ```bash
