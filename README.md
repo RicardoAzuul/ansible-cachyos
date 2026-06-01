@@ -17,3 +17,5 @@ ansible-playbook playbooks/laptop.yml --ask-become-pass
 ```
 
 The playbook installs official CachyOS packages with pacman and AUR packages with `paru`.
+
+Review `vars/packages.yml` before running the playbook. The AUR install step uses `paru --noconfirm --needed`, so the listed AUR packages are installed without additional prompts.
