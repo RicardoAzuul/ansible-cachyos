@@ -35,6 +35,6 @@ Run the playbook against the local machine:
 ansible-playbook playbooks/laptop.yml --ask-become-pass
 ```
 
-The playbook installs official CachyOS packages with pacman and AUR packages with `paru`.
+The playbook installs official CachyOS packages with pacman, AUR packages with `paru`, and installs Homebrew to manage Vagrant via `brew tap hashicorp/tap` and `brew install hashicorp/tap/vagrant`.
 
 Review `vars/packages.yml` before running the playbook. The AUR install step uses `paru --noconfirm --needed`, so the listed AUR packages are installed without additional prompts.
