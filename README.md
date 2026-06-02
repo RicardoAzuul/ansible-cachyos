@@ -13,6 +13,7 @@ Configure a CachyOS laptop with Ansible.
 Before running the playbook on a CachyOS laptop, install the required tooling manually:
 
 ```bash
+# Sync and update all packages
 sudo pacman -Syu
 sudo pacman -S --needed ansible git base-devel
 ansible-galaxy collection install community.general
