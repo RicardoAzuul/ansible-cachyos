@@ -1,0 +1,23 @@
+---
+cachyos_pacman_packages:
+  - azure-cli
+  - base-devel
+  - discord
+  - firefox
+  - git
+  - obsidian
+  - signal-desktop
+  - steam
+  - telegram-desktop
+  - terraform
+  - vagrant
+
+cachyos_aur_packages:
+  - brave-bin
+  - duckduckgo-browser
+  - minigalaxy
+  - slack-desktop
+  - teams-for-linux
+  - ticktick
+  - visual-studio-code-bin
+  - whatsapp-for-linux

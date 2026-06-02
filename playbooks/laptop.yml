@@ -1,0 +1,31 @@
+---
+- name: Configure CachyOS laptop
+  hosts: cachyos_laptop
+  gather_facts: true
+  vars_files:
+    - ../vars/packages.yml
+
+  tasks:
+    - name: Install official CachyOS packages
+      become: true
+      community.general.pacman:
+        update_cache: true
+        name: "{{ cachyos_pacman_packages }}"
+        state: present
+
+    - name: Check whether paru is available
+      ansible.builtin.stat:
+        path: /usr/bin/paru
+      register: paru_binary
+
+    - name: Fail when paru is missing
+      ansible.builtin.fail:
+        msg: paru is required to install AUR packages on CachyOS.
+      when: not paru_binary.stat.exists
+
+    - name: Install AUR packages with paru
+      community.general.pacman:
+        executable: paru
+        extra_args: --noconfirm --needed
+        name: "{{ cachyos_aur_packages }}"
+        state: present
