@@ -10,7 +10,6 @@ cachyos_pacman_packages:
   - steam
   - telegram-desktop
   - terraform
-  - vagrant
 
 cachyos_aur_packages:
   - brave-bin
