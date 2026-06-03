@@ -13,7 +13,6 @@ cachyos_pacman_packages:
 
 cachyos_aur_packages:
   - brave-bin
-  - duckduckgo-browser
   - minigalaxy
   - slack-desktop
   - teams-for-linux
