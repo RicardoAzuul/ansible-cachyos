@@ -54,10 +54,11 @@
 
     - name: Install AUR packages with paru
       community.general.pacman:
-        executable: paru
-        extra_args: --noconfirm --needed
         name: "{{ cachyos_aur_packages }}"
         state: present
+        executable: paru
+        extra_args: --builddir /var/cache/paru
+
 
     - name: Check whether Homebrew is available
       ansible.builtin.stat:
