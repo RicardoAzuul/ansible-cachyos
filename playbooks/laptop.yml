@@ -42,7 +42,7 @@
       block:
         - name: Clone paru repository
           ansible.builtin.git:
-            repo: https://aur.archlinux.org/paru-bin.git
+            repo: https://aur.archlinux.org/paru.git
             dest: /tmp/paru-bin
             update: false
 
