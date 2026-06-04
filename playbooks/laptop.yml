@@ -23,10 +23,10 @@
     - name: Allow aurbuilder to use pacman without password
       become: true
       ansible.builtin.lineinfile:
-        path: /etc/sudoers.d/aurbuilder
+        path: /etc/sudoers.d/11-aurbuilder
         line: "aurbuilder ALL=(ALL) NOPASSWD: /usr/bin/pacman"
         create: true
-        mode: '0440'
+        mode: 0644
         validate: 'visudo -cf %s'
 
     - name: Check if paru is installed
