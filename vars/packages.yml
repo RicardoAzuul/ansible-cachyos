@@ -5,6 +5,7 @@ cachyos_pacman_packages:
   - discord
   - firefox
   - git
+  - keepass
   - obsidian
   - rclone
   - signal-desktop
