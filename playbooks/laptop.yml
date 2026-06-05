@@ -94,3 +94,30 @@
         name: hashicorp/tap/vagrant
         state: present
         path: /home/linuxbrew/.linuxbrew/bin
+
+    - name: Ensure ~/opt exists for Espanso AppImage
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/opt"
+        state: directory
+        mode: '0755'
+
+    - name: Download Espanso AppImage
+      ansible.builtin.get_url:
+        url: https://github.com/espanso/espanso/releases/latest/download/Espanso-X11.AppImage
+        dest: "{{ ansible_env.HOME }}/opt/Espanso.AppImage"
+        mode: '0755'
+
+    - name: Register Espanso command alias
+      become: true
+      ansible.builtin.command: "{{ ansible_env.HOME }}/opt/Espanso.AppImage env-path register"
+      args:
+        creates: /usr/local/bin/espanso
+
+    - name: Register Espanso systemd user service
+      ansible.builtin.command: /usr/local/bin/espanso service register
+      args:
+        creates: "{{ ansible_env.HOME }}/.config/systemd/user/espanso.service"
+
+    - name: Start Espanso
+      ansible.builtin.command: /usr/local/bin/espanso start
+      changed_when: false
