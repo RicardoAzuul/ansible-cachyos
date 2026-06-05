@@ -9,6 +9,7 @@ cachyos_pacman_packages:
   - obsidian
   - rclone
   - signal-desktop
+  - solanum
   - steam
   - telegram-desktop
   - terraform
