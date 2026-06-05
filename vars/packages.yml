@@ -6,6 +6,7 @@ cachyos_pacman_packages:
   - firefox
   - git
   - obsidian
+  - rclone
   - signal-desktop
   - steam
   - telegram-desktop
