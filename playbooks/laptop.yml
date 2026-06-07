@@ -62,39 +62,6 @@
         state: present
 
 
-    - name: Check whether Homebrew is available
-      ansible.builtin.stat:
-        path: /home/linuxbrew/.linuxbrew/bin/brew
-      register: brew_binary
-
-    - name: Install Homebrew
-      ansible.builtin.shell:
-        cmd: NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        creates: /home/linuxbrew/.linuxbrew/bin/brew
-      register: homebrew_install
-      when: not brew_binary.stat.exists
-
-    - name: Verify Homebrew binary is present after installation
-      ansible.builtin.stat:
-        path: /home/linuxbrew/.linuxbrew/bin/brew
-      register: brew_binary_check
-
-    - name: Fail when Homebrew installation did not produce a brew binary
-      ansible.builtin.fail:
-        msg: Homebrew installation failed. The brew binary was not found at /home/linuxbrew/.linuxbrew/bin/brew.
-      when: not brew_binary_check.stat.exists
-
-    - name: Tap hashicorp/tap Homebrew repository
-      community.general.homebrew_tap:
-        name: hashicorp/tap
-        path: /home/linuxbrew/.linuxbrew/bin
-
-    - name: Install Vagrant via Homebrew
-      community.general.homebrew:
-        name: hashicorp/tap/vagrant
-        state: present
-        path: /home/linuxbrew/.linuxbrew/bin
-
     - name: Ensure ~/opt exists for Espanso AppImage
       ansible.builtin.file:
         path: "{{ ansible_user_dir }}/opt"
@@ -126,3 +93,36 @@
       failed_when:
         - espanso_start.rc != 0
         - "'already running' not in (((espanso_start.stdout | default('')) ~ (espanso_start.stderr | default(''))) | lower)"
+
+    # - name: Check whether Homebrew is available
+    #   ansible.builtin.stat:
+    #     path: /home/linuxbrew/.linuxbrew/bin/brew
+    #   register: brew_binary
+    #
+    # - name: Install Homebrew
+    #   ansible.builtin.shell:
+    #     cmd: NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    #     creates: /home/linuxbrew/.linuxbrew/bin/brew
+    #   register: homebrew_install
+    #   when: not brew_binary.stat.exists
+    #
+    # - name: Verify Homebrew binary is present after installation
+    #   ansible.builtin.stat:
+    #     path: /home/linuxbrew/.linuxbrew/bin/brew
+    #   register: brew_binary_check
+    #
+    # - name: Fail when Homebrew installation did not produce a brew binary
+    #   ansible.builtin.fail:
+    #     msg: Homebrew installation failed. The brew binary was not found at /home/linuxbrew/.linuxbrew/bin/brew.
+    #   when: not brew_binary_check.stat.exists
+    #
+    # - name: Tap hashicorp/tap Homebrew repository
+    #   community.general.homebrew_tap:
+    #     name: hashicorp/tap
+    #     path: /home/linuxbrew/.linuxbrew/bin
+    #
+    # - name: Install Vagrant via Homebrew
+    #   community.general.homebrew:
+    #     name: hashicorp/tap/vagrant
+    #     state: present
+    #     path: /home/linuxbrew/.linuxbrew/bin
