@@ -4,7 +4,7 @@ Configure a CachyOS laptop with Ansible.
 
 ## What it installs
 
-- Browsers and desktop apps: Firefox, Brave, Slack, VS Code, Teams, TickTick, Telegram, Steam, Signal, Obsidian, Discord, Espanso
+- Browsers and desktop apps: Firefox, Brave, Slack, VS Code, Teams, TickTick, Telegram, Steam, Signal, Obsidian, Discord, Espanso, OnlyOffice
 - Developer tools: Git, Azure CLI, Terraform, Vagrant, rclone, pip
 - GOG client: Minigalaxy as the Linux-compatible GOG client
 
