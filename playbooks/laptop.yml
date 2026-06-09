@@ -68,6 +68,12 @@
         state: present
 
 
+    - name: Ensure ~/GoogleDrive exists for rclone
+      ansible.builtin.file:
+        path: "{{ ansible_user_dir }}/GoogleDrive"
+        state: directory
+        mode: '0755'
+
     - name: Ensure ~/opt exists for Espanso AppImage
       ansible.builtin.file:
         path: "{{ ansible_user_dir }}/opt"
