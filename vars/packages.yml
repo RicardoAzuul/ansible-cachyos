@@ -7,6 +7,7 @@ cachyos_pacman_packages:
   - git
   - keepass
   - obsidian
+  - onlyoffice-bin
   - python-pipx
   - rclone
   - signal-desktop
