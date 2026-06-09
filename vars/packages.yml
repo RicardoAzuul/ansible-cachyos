@@ -8,7 +8,7 @@ cachyos_pacman_packages:
   - keepass
   - obsidian
   - onlyoffice-bin
-  - python-pip
+  - python-pipx
   - rclone
   - signal-desktop
   - solanum
