@@ -2,6 +2,7 @@
 cachyos_pacman_packages:
   - azure-cli
   - base-devel
+  - claude-code
   - discord
   - firefox
   - git
