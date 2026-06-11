@@ -6,6 +6,7 @@ cachyos_pacman_packages:
   - discord
   - firefox
   - git
+  - github-cli
   - keepass
   - obsidian
   - onlyoffice-bin
