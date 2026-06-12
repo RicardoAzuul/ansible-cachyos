@@ -13,12 +13,6 @@
         name: "{{ cachyos_pacman_packages }}"
         state: present
 
-    - name: Uninstall python-pip
-      become: true
-      community.general.pacman:
-        name: python-pip
-        state: absent
-
     - name: Create AUR builder user
       become: true
       ansible.builtin.user:
