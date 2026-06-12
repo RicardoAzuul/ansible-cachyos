@@ -89,7 +89,7 @@
 
     - name: Download Espanso AppImage
       ansible.builtin.get_url:
-        url: https://github.com/espanso/espanso/releases/latest/download/Espanso-X11.AppImage
+        url: https://github.com/espanso/espanso/releases/latest/download/Espanso-wayland.AppImage
         dest: "{{ ansible_user_dir }}/opt/Espanso.AppImage"
         mode: '0755'
         force: false
