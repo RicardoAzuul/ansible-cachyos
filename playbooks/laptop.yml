@@ -70,8 +70,8 @@
 
     - name: Copy rclone mount user service
       ansible.builtin.copy:
-        src: rclone@googledrive
-        dest: "{{ ansible_user_dir }}/.config/systemd/user/rclone@googledrive"
+        src: rclone@googledrive.service
+        dest: "{{ ansible_user_dir }}/.config/systemd/user/rclone@googledrive.service"
         mode: '0644'
       notify: Reload systemd user daemon
 
