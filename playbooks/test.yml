@@ -1,0 +1,9 @@
+---
+- name: Test playbook run on merge
+  hosts: cachyos_laptop
+  gather_facts: false
+
+  tasks:
+    - name: Hello world
+      ansible.builtin.debug:
+        msg: "Hello world from Ansible!"

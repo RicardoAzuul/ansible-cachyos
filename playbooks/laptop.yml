@@ -42,7 +42,7 @@
       become_user: aurbuilder
       block:
         - name: Clone paru repository
-          ansible.builtin.git:
+          ansible.builtin.git: # noqa: git-latest
             repo: https://aur.archlinux.org/paru.git
             dest: /tmp/paru-bin
             update: false
