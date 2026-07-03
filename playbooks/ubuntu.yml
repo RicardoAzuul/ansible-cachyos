@@ -74,10 +74,12 @@
     - name: Start Espanso
       ansible.builtin.command: /usr/local/bin/espanso start
       register: espanso_start
-      changed_when: "'already running' not in (((espanso_start.stdout | default('')) ~ (espanso_start.stderr | default(''))) | lower)"
+      vars:
+        espanso_output: "{{ ((espanso_start.stdout | default('')) ~ (espanso_start.stderr | default(''))) | lower }}"
+      changed_when: "'already running' not in espanso_output"
       failed_when:
         - espanso_start.rc != 0
-        - "'already running' not in (((espanso_start.stdout | default('')) ~ (espanso_start.stderr | default(''))) | lower)"
+        - "'already running' not in espanso_output"
 
   handlers:
     - name: Reload systemd user daemon
