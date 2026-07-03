@@ -26,6 +26,16 @@ Run the playbook against the local machine:
 ansible-playbook playbooks/laptop.yml --ask-become-pass
 ```
 
-The playbook installs official CachyOS packages with pacman, automatically installs the `paru` AUR helper if it is not already present, installs AUR packages with `kewlfft.aur.aur` running as the `aurbuilder` user, and installs Homebrew to manage Vagrant via `brew tap hashicorp/tap` and `brew install hashicorp/tap/vagrant`.
+The playbook installs official CachyOS packages with pacman, automatically installs the `paru` AUR helper if it is not already present, installs AUR packages with `kewlfft.aur.aur` running as the `aurbuilder` user, and installs Espanso and rclone on all supported systems.
 
 Review `vars/packages.yml` before running the playbook. The AUR install step uses `paru` via the `kewlfft.aur` collection, so packages are installed without additional prompts.
+
+You can also run an OS-specific playbook directly:
+
+```bash
+# CachyOS only
+ansible-playbook playbooks/cachyos.yml --ask-become-pass
+
+# Ubuntu only
+ansible-playbook playbooks/ubuntu.yml --ask-become-pass
+```
