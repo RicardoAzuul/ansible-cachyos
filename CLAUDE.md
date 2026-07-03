@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Purpose
 
-Single-playbook Ansible project that configures a laptop running CachyOS or Ubuntu. It runs locally against `localhost` and installs packages via the appropriate package manager for the detected OS (pacman/paru for Arch-based, apt/snap for Debian-based), plus app-specific methods (AppImage, systemd).
+Multi-playbook Ansible project that configures a laptop running CachyOS or Ubuntu. It runs locally against `localhost` and installs packages via the appropriate package manager for the detected OS (pacman/paru for Arch-based, apt/snap for Debian-based), plus app-specific methods (AppImage, systemd).
 
 ## Commands
 
@@ -31,22 +31,22 @@ ansible-playbook playbooks/laptop.yml --ask-become-pass -v
 ## Architecture
 
 ```
-ansible.cfg          # Sets inventory = inventory/hosts.ini
-inventory/hosts.ini  # Groups: cachyos_laptop, ubuntu_laptop; parent group: laptop
-vars/packages.yml    # Package lists: cachyos_pacman_packages, cachyos_aur_packages,
-                     #                ubuntu_apt_packages, ubuntu_snap_packages,
-                     #                ubuntu_snap_classic_packages
-playbooks/laptop.yml # All tasks in one file, loads vars from ../vars/packages.yml
-requirements.yml     # community.general + kewlfft.aur collections
+ansible.cfg           # Sets inventory = inventory/hosts.ini
+inventory/hosts.ini   # Groups: cachyos_laptop, ubuntu_laptop; parent group: laptop
+vars/packages.yml     # Package lists: cachyos_pacman_packages, cachyos_aur_packages,
+                      #                ubuntu_apt_packages, ubuntu_snap_packages,
+                      #                ubuntu_snap_classic_packages
+playbooks/laptop.yml  # Entry-point: imports cachyos.yml and ubuntu.yml
+playbooks/cachyos.yml # CachyOS / Arch Linux tasks (targets cachyos_laptop group)
+playbooks/ubuntu.yml  # Ubuntu / Debian tasks (targets ubuntu_laptop group)
+requirements.yml      # community.general + kewlfft.aur collections
 ```
 
-**All tasks live in `playbooks/laptop.yml`** — there are no roles. The playbook targets the `laptop` inventory group (which includes `cachyos_laptop` and `ubuntu_laptop` as children).
+`playbooks/laptop.yml` is the entry-point that imports the two OS-specific playbooks:
+- `playbooks/cachyos.yml` — targets the `cachyos_laptop` inventory group; handles pacman, AUR/paru, plus common tasks (Espanso AppImage, rclone systemd service)
+- `playbooks/ubuntu.yml` — targets the `ubuntu_laptop` inventory group; handles apt, snap, plus common tasks (Espanso AppImage, rclone systemd service)
 
-OS-specific task blocks use `ansible_os_family` to conditionally run tasks:
-- `ansible_os_family == 'Archlinux'` → CachyOS / Arch Linux tasks (pacman, AUR/paru)
-- `ansible_os_family == 'Debian'` → Ubuntu / Debian tasks (apt, snap)
-
-Common tasks (Espanso AppImage, rclone systemd service) run on all supported OS families.
+Each OS-specific playbook can also be run independently against its respective hosts.
 
 ### AUR handling (CachyOS / Arch Linux only)
 
@@ -62,7 +62,7 @@ AUR packages require an unprivileged `aurbuilder` user. The playbook:
 - **AUR packages** → add to `cachyos_aur_packages` in `vars/packages.yml`
 - **Ubuntu apt packages** → add to `ubuntu_apt_packages` in `vars/packages.yml`
 - **Ubuntu snap packages** → add to `ubuntu_snap_packages` (or `ubuntu_snap_classic_packages` for classic confinement) in `vars/packages.yml`
-- **Other install methods** (AppImage, systemd service, etc.) → add tasks directly to `playbooks/laptop.yml`
+- **Other install methods** (AppImage, systemd service, etc.) → add tasks directly to `playbooks/cachyos.yml`, `playbooks/ubuntu.yml`, or both as appropriate
 
 ### Inventory setup
 
