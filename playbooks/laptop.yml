@@ -1,66 +1,93 @@
 ---
-- name: Configure CachyOS laptop
-  hosts: cachyos_laptop
+- name: Configure laptop
+  hosts: laptop
   gather_facts: true
   vars_files:
     - ../vars/packages.yml
 
   tasks:
-    - name: Install official CachyOS packages
-      become: true
-      community.general.pacman:
-        update_cache: true
-        name: "{{ cachyos_pacman_packages }}"
-        state: present
-
-    - name: Create AUR builder user
-      become: true
-      ansible.builtin.user:
-        name: aurbuilder
-        groups: wheel
-        create_home: true
-
-    - name: Allow aurbuilder to use pacman and paru without password
-      become: true
-      ansible.builtin.copy:
-        dest: /etc/sudoers.d/11-aurbuilder
-        content: |
-          aurbuilder ALL=(ALL) NOPASSWD: /usr/bin/pacman
-          aurbuilder ALL=(ALL) NOPASSWD: /usr/bin/paru
-        mode: '0440'
-        validate: 'visudo -cf %s'
-
-    - name: Check if paru is installed
-      ansible.builtin.command: which paru
-      register: paru_check
-      changed_when: false
-      failed_when: false
-
-    - name: Install paru AUR helper
-      when: paru_check.rc != 0
-      become: true
-      become_user: aurbuilder
+    - name: Arch Linux / CachyOS specific setup
+      when: ansible_os_family == 'Archlinux'
       block:
-        - name: Clone paru repository
-          ansible.builtin.git: # noqa: git-latest
-            repo: https://aur.archlinux.org/paru.git
-            dest: /tmp/paru-bin
-            update: false
+        - name: Install official CachyOS packages
+          become: true
+          community.general.pacman:
+            update_cache: true
+            name: "{{ cachyos_pacman_packages }}"
+            state: present
 
-        - name: Build and install paru
-          ansible.builtin.command: makepkg -si --noconfirm
-          args:
-            chdir: /tmp/paru-bin
-          changed_when: true
+        - name: Create AUR builder user
+          become: true
+          ansible.builtin.user:
+            name: aurbuilder
+            groups: wheel
+            create_home: true
 
-    - name: Install AUR packages with paru
-      become: true
-      become_user: aurbuilder
-      kewlfft.aur.aur:
-        name: "{{ cachyos_aur_packages }}"
-        use: paru
-        state: present
+        - name: Allow aurbuilder to use pacman and paru without password
+          become: true
+          ansible.builtin.copy:
+            dest: /etc/sudoers.d/11-aurbuilder
+            content: |
+              aurbuilder ALL=(ALL) NOPASSWD: /usr/bin/pacman
+              aurbuilder ALL=(ALL) NOPASSWD: /usr/bin/paru
+            mode: '0440'
+            validate: 'visudo -cf %s'
 
+        - name: Check if paru is installed
+          ansible.builtin.command: which paru
+          register: paru_check
+          changed_when: false
+          failed_when: false
+
+        - name: Install paru AUR helper
+          when: paru_check.rc != 0
+          become: true
+          become_user: aurbuilder
+          block:
+            - name: Clone paru repository
+              ansible.builtin.git: # noqa: git-latest
+                repo: https://aur.archlinux.org/paru.git
+                dest: /tmp/paru-bin
+                update: false
+
+            - name: Build and install paru
+              ansible.builtin.command: makepkg -si --noconfirm
+              args:
+                chdir: /tmp/paru-bin
+              changed_when: true
+
+        - name: Install AUR packages with paru
+          become: true
+          become_user: aurbuilder
+          kewlfft.aur.aur:
+            name: "{{ cachyos_aur_packages }}"
+            use: paru
+            state: present
+
+    - name: Ubuntu / Debian specific setup
+      when: ansible_os_family == 'Debian'
+      block:
+        - name: Install packages via apt
+          become: true
+          ansible.builtin.apt:
+            update_cache: true
+            name: "{{ ubuntu_apt_packages }}"
+            state: present
+
+        - name: Install snap packages
+          become: true
+          community.general.snap:
+            name: "{{ ubuntu_snap_packages }}"
+            state: present
+          when: ubuntu_snap_packages | length > 0
+
+        - name: Install classic snap packages
+          become: true
+          community.general.snap:
+            name: "{{ ubuntu_snap_classic_packages }}"
+            classic: true
+            state: present
+          when: ubuntu_snap_classic_packages | length > 0
 
     - name: Ensure ~/.config/systemd/user exists for rclone service
       ansible.builtin.file:
@@ -118,36 +145,3 @@
       ansible.builtin.systemd:
         daemon_reload: true
         scope: user
-
-    # - name: Check whether Homebrew is available
-    #   ansible.builtin.stat:
-    #     path: /home/linuxbrew/.linuxbrew/bin/brew
-    #   register: brew_binary
-    #
-    # - name: Install Homebrew
-    #   ansible.builtin.shell:
-    #     cmd: NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    #     creates: /home/linuxbrew/.linuxbrew/bin/brew
-    #   register: homebrew_install
-    #   when: not brew_binary.stat.exists
-    #
-    # - name: Verify Homebrew binary is present after installation
-    #   ansible.builtin.stat:
-    #     path: /home/linuxbrew/.linuxbrew/bin/brew
-    #   register: brew_binary_check
-    #
-    # - name: Fail when Homebrew installation did not produce a brew binary
-    #   ansible.builtin.fail:
-    #     msg: Homebrew installation failed. The brew binary was not found at /home/linuxbrew/.linuxbrew/bin/brew.
-    #   when: not brew_binary_check.stat.exists
-    #
-    # - name: Tap hashicorp/tap Homebrew repository
-    #   community.general.homebrew_tap:
-    #     name: hashicorp/tap
-    #     path: /home/linuxbrew/.linuxbrew/bin
-    #
-    # - name: Install Vagrant via Homebrew
-    #   community.general.homebrew:
-    #     name: hashicorp/tap/vagrant
-    #     state: present
-    #     path: /home/linuxbrew/.linuxbrew/bin

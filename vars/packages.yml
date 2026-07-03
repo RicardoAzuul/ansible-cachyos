@@ -25,3 +25,24 @@ cachyos_aur_packages:
   - teams-for-linux
   - ticktick
   - visual-studio-code-bin
+
+ubuntu_apt_packages:
+  - build-essential
+  - firefox
+  - git
+  - gh
+  - keepassxc
+  - pipx
+  - rclone
+  - signal-desktop
+  - steam
+  - telegram-desktop
+
+ubuntu_snap_packages:
+  - discord
+  - obsidian
+  - slack
+  - ticktick
+
+ubuntu_snap_classic_packages:
+  - code
